@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: air_boltic
+    description: "A source for air boltic customers and airplanes data"
+    catalog: gold_production
+    schema: events
+    tables:
+      - name: customer
+      - name: customer_group
+      - name: aeroplane
+      - name: trip
+      - name: order

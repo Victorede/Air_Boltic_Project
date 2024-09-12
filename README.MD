@@ -67,12 +67,12 @@ erDiagram
 
     %% Relationships
 
-    dim_customer_groups     ||--o{     dim_customers     : customer_group_id
-    dim_aeroplane_models    ||--o{     dim_aeroplanes    : model_id
-    fact_trips              ||--o{     dim_aeroplanes    : airplane_id
-    fact_orders             ||--o{     dim_customers     : customer_id
-    fact_orders             ||--o{     fact_trips        : trip_id
-    fact_orders             ||--o{     dim_order_status  : status_id
+    dim_customer_groups ||--o{ dim_customers : customer_group_id
+    dim_aeroplane_models ||--o{ dim_aeroplanes : model_id
+    dim_aeroplanes ||--o{ fact_trips : airplane_id
+    dim_customers ||--o{ fact_orders : customer_id
+    fact_trips ||--o{ fact_orders : trip_id
+    dim_order_status ||--o{ fact_orders : status_id
 
 ```
 
@@ -87,21 +87,26 @@ fact_trips: Contains detailed trip information including origin, destination, an
 
 #### Dimension Tables:
 
-dim_customers: Describes customers and their associated customer groups.
-dim_aeroplanes: Describes the specific aeroplanes used for trips, linked to the aeroplane models.
-dim_aeroplane_models: Describes general aeroplane models and their specifications (manufacturer, max seats, etc.).
-dim_order_status: Describes the status of the orders (booked, finished, cancelled).
+`dim_customers`: Describes customers and their associated customer groups. 
+
+`dim_aeroplanes`: Describes the specific aeroplanes used for trips, linked to the aeroplane models.
+
+`dim_aeroplane_models`: Describes general aeroplane models and their specifications (manufacturer, max seats, etc.).
+
+`dim_order_status`: Describes the status of the orders (booked, finished, cancelled).
 
 ## Base, Intermediate, and Mart Layers
 The models are structured across three layers in the dbt framework:
 
-#### Base (Staging) Layer: Raw data from the source is cleaned and standardized.
+`Base (Staging) Layer`: Raw data from the source is cleaned and standardized.
 
 #### models: stg_customers, stg_orders, stg_trips, stg_aeroplanes, stg_aeroplane_models.
-#### Intermediate (Transform) Layer: Joins and transformations across the base tables to create meaningful relationships and calculations.
+
+`Intermediate (Transform) Layer`: Joins and transformations across the base tables to create meaningful relationships and calculations.
 
 #### models: int_customers_with_groups, int_trips_with_planes, int_orders_with_status.
-#### Mart (Fact and Dimension) Layer: Business-ready tables used for reporting and analysis.
+
+`Mart (Fact and Dimension) Layer`: Business-ready tables used for reporting and analysis.
 
 #### Fact Tables: fact_orders, fact_trips.
 #### Dimension Tables: dim_customers, dim_aeroplanes, dim_aeroplane_models, dim_order_status.
