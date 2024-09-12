@@ -2,7 +2,7 @@
     config(
         partition_by=["customer_group_id"]
     )
-}
+}}
 
 with
 source as (
