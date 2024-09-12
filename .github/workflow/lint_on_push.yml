@@ -25,7 +25,7 @@ jobs:
         uses: aws-actions/aws-secretsmanager-get-secrets@v1
         with:
           secret-ids: |
-            ELEM,bia/air-boltic_project/profile
+            ELEM,bolt/air-boltic_project/profile
           parse-json-secrets: true
 
       - name: Generate profiles.yml
