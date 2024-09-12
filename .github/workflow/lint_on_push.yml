@@ -1,0 +1,116 @@
+name: lint dbt project on push
+
+on:
+  push
+
+jobs:
+  lint_project:
+    name: Run SQLFluff Linter
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-west-1
+          role-to-assume: arn:aws:iam::0000000:role/air-boltic-github-role
+          role-duration-seconds: 1800
+          role-session-name: airbolticsession
+
+      - name: Get DBT Profile Credentials
+        uses: aws-actions/aws-secretsmanager-get-secrets@v1
+        with:
+          secret-ids: |
+            ELEM,bia/air-boltic_project/profile
+          parse-json-secrets: true
+
+      - name: Generate profiles.yml
+        id: generate_profiles_yml
+        run: |
+          yaml_content="databricks:\n  outputs:\n    default:\n      type: 'databricks'\n      catalog: 'gold'\n      schema: 'central_data'\n      host: 'air_boltic.cloud.databricks.com'\n      http_path: '/sql/1.0/warehouses/airboltic'\n      token: '${{ env_var('PRODUCTION_TOKEN') }}'"
+          delimiter="$(openssl rand -hex 8)"
+          {
+            echo "profile_yml<<${delimiter}"
+            echo -e "$yaml_content"
+            echo "${delimiter}"
+          } >> $GITHUB_OUTPUT
+
+      - name: Checkout dbt project
+        uses: actions/checkout@v3
+
+      - name: Download DBT Profile
+        run: |
+          mkdir -p ~/.dbt
+          echo "${{ steps.generate_profiles_yml.outputs.profile_yml }}" > ~/.dbt/profiles.yml
+
+      - name: Update pip, and install older setuptools and wheel
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'setuptools<58.0.0' wheel
+
+      - name: Install SQLFluff and dbt-databricks
+        run: |
+          python -m pip install sqlfluff-templater-dbt
+          python -m pip install dbt-databricks
+
+      - name: Install dbt dependencies
+        run: dbt deps
+
+      - name: Filter for SQL files
+        id: filter_files
+        uses: dorny/paths-filter@v2
+        with:
+          list-files: json
+          filters: |
+            sql_files:
+              - '**/*.sql'
+            yml_files:
+              - 'models/**/*.yml'
+
+      - name: Lint changed SQL files
+        if: steps.filter_files.outputs.sql_files == 'true'
+        run: |
+          changed_files=$(echo '${{ steps.filter_files.outputs.sql_files_files }}' | jq -r '.[]')
+          files_to_lint=""
+          for file in $changed_files; do
+            if [ -f "$file" ]; then
+              files_to_lint="$files_to_lint $file"
+            fi
+          done
+          echo "Files to lint: $files_to_lint"
+          if [ -n "$files_to_lint" ]; then
+            sqlfluff lint $files_to_lint --dialect databricks --config .sqlfluff --verbose
+          else
+            echo "No files to lint."
+          fi
+
+       - name: Get changed .sql and .yml files in /models to lint
+        id: get_files_to_lint
+        run: |
+          changed_files=$(echo '${{ steps.filter_files.outputs.sql_files_files }} ${{ steps.filter_files.outputs.yml_files_files }}' | jq -r '.[]')
+          files_to_lint=""
+          for file in $changed_files; do
+            if [ -f "$file" ]; then
+              files_to_lint="$files_to_lint $file"
+            fi
+          done
+          echo "FILES=$files_to_lint"
+          echo "FILES=$files_to_lint" >> $GITHUB_ENV
+
+    
+      - name: Run pre-commit
+        run: |
+          if [ -n "${{ env.FILES }}" ]; then
+            echo "Files to lint: ${{ env.FILES }}"
+            IFS=' ' read -r -a files <<< "${{ env.FILES }}"
+            for file in "${files[@]}"; do
+              echo "File: '$file'"
+            done
+            pre-commit run --files "${files[@]}"
+          else
+            echo "No files to lint."
+          fi
