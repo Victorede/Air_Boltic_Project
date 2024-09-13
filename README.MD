@@ -61,7 +61,7 @@ erDiagram
 
     dim_order_status {
         int status_id PK
-        string status
+        string order_status
     }
 
     %% Relationships

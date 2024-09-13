@@ -1,0 +1,58 @@
+version: 2
+
+models:
+  - name: stg_aeroplanes
+    description: normalized airplane model
+    columns:
+      - name: airplane_id
+        data_tests:
+          - not_null
+          - unique
+  
+  - name: stg_aeroplane_models
+    description: "contains information of the properties of each airplane model"
+    columns:
+      - name: model_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: stg_customers
+    description: "contains information of customers"
+    columns:
+      - name: customer_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: stg_customer_groups
+    description: "contains information on customer groups"
+    columns:
+      - name: customer_group_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: stg_order_status
+    description: "contains information on order status"
+    columns:
+      - name: status_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: stg_orders
+    description: "contains information on orders"
+    columns:
+      - name: order_id
+        data_tests:
+          - not_null
+          - unique
+
+  - name: stg_trips
+    description: "contains information on trips"
+    columns:
+      - name: trip_id
+        data_tests:
+          - not_null
+          - unique
