@@ -19,12 +19,18 @@ models:
     columns: true
 
     base:
+      +docs:
+        node_color: green
       materialized: view
       
     intermediate:
+      +docs:
+        node_color: yellow
       materialized: table
 
     marts: 
+      +docs:
+        node_color: blue
       materialized: table
 
   elementary:

@@ -104,7 +104,7 @@ The models are structured across three layers in the dbt framework:
 
 `Intermediate (Transform) Layer`: Joins and transformations across the base tables to create meaningful relationships and calculations.
 
-#### models: int_customers_with_groups, int_trips_with_planes, int_orders_with_status.
+#### models:  int_orders.
 
 `Mart (Fact and Dimension) Layer`: Business-ready tables used for reporting and analysis.
 
@@ -112,36 +112,40 @@ The models are structured across three layers in the dbt framework:
 #### Dimension Tables: dim_customers, dim_aeroplanes, dim_aeroplane_models, dim_order_status.
 
 ## Key Metrics Supported by the Data Model
-`Daily/Weekly/Monthly Active Users`:
+#### Daily/Weekly/Monthly Active Users:
 
-Can be tracked by querying the Orders Table to see which customers made bookings or completed trips in a given time period.
+`Fact Table`: Can be tracked by querying the Orders Table to see which customers made bookings or completed trips in a given time period. This data can be aggregated to calculate customer activity for any period.
 
-`Revenue Analysis`:
+#### Revenue Analysis:
 
-Orders Table includes the price paid by each customer for a trip. Aggregating this data allows for revenue analysis by trip, by customer group, or by time period.
+`Fact Table`: The Orders Table includes the price paid by each customer for a trip. Aggregating this data allows for revenue analysis by trip, by customer group, or by time period. For instance, total revenue per month or per trip can be analyzed by joining the Orders and Trips tables.
 
-`Aeroplane Utilization`:
+#### Aeroplane Utilization:
 
-The Trips Table contains information about which aeroplanes were used for each trip. Combining this with the Orders Table (to check how many seats were sold) can give insights into aeroplane utilization (e.g., load factor).
+`Dimension + Fact Tables`: The Trips Table contains information about which aeroplanes were used for each trip. Combining this with the Orders Table (to check how many seats were sold per trip) can give insights into aeroplane utilization (e.g., load factor). This provides an understanding of how efficiently each aeroplane is being used.
 
-`Geographic Trends`:
+#### Geographic Trends:
 
-The Trips Table includes origin and destination cities, enabling analysis of which routes are most popular or which regions need improvement.
+`Dimension Table`: The Trips Table includes origin and destination cities, enabling analysis of which routes are most popular or which regions may need improvement. You can track which routes generate the most revenue or the highest number of bookings.
 
-`Customer Segmentation`:
+#### Customer Segmentation:
 
-The Customers Table and Customer Groups Table allow segmentation based on customer type (e.g., individual vs. corporate clients) and performance tracking per customer group.
+`Dimension Table`: The Customers Table and Customer Groups Table allow segmentation based on customer type (e.g., private group vs. corporate clients) and performance tracking per customer group. This can be useful for understanding which customer segments are contributing the most revenue or are the most active.
 
 ## How This Supports Self-Service Analysis
 
-Self-Service Analysis: This model allows analysts or business users to easily query key performance metrics across various dimensions, such as:
+#### Self-Service Analysis:
 
-Customer behavior: Who are our most active users?
+This model allows analysts or business users to easily query key performance metrics across various dimensions, such as:
 
-Geographic trends: Which routes or regions are most profitable or underused?
+`Customer behavior`: By querying the fact_orders table and joining with dim_customers, analysts can determine which customers are the most active, which customer groups generate the most revenue, or how frequently a customer books trips.
 
-Aircraft utilization: Which aeroplanes are used most efficiently?
+`Geographic trends`: By using the dim_trips table, analysts can easily track which routes or regions are the most profitable or underused. This helps in optimizing route planning and marketing strategies.
 
-Revenue metrics: How much revenue is generated per customer group, per trip, or per month?
+`Aircraft utilization`: By joining the dim_trips and dim_aeroplanes tables with the fact_orders table, analysts can track which aeroplanes are being used most efficiently based on the number of bookings per trip and seat availability.
 
-Flexibility: This normalized model reduces redundancy and ensures that the dataset can scale as the business grows. It allows users to join different tables (e.g., Orders, Trips, Aeroplanes) to answer complex questions while maintaining data integrity.
+`Revenue metrics`: The fact_orders table allows for detailed revenue analysis, including breakdowns by customer, customer group, or aeroplane. This can be done by aggregating the price field in the Orders Table across various dimensions like time period, trip, or customer group.
+
+`Flexibility`:
+This normalized model reduces redundancy and ensures that the dataset can scale as the business grows. It allows users to join different tables (e.g., Orders, Trips, Aeroplanes) to answer complex questions while maintaining data integrity. The separation of dimensions (such as Trips and Customers) from facts (like Orders) provides flexibility in performing various analyses and deriving actionable insights.
+
