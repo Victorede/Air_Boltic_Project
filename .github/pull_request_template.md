@@ -42,7 +42,7 @@ Put an `x` in all the items that apply
 - [ ] Models are correctly referenced/updated in the  model documentation YML file
 
 
-- [ ] YMl files for models and sources documentation are correctly named(Prefix _base_  for base model, _int_ for intermediate model, fact_ for marts models and _sourcs_ for sources)
+- [ ] YMl files for models and sources documentation are correctly named(Prefix _stg_  for base model, _int_ for intermediate model, fact_ for marts models and _sourcs_ for sources)
 
 - [ ] My commits are related to the pull request.
 
