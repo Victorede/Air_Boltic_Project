@@ -12,6 +12,7 @@ source as (
         cast("Customer Group ID" as int) as customer_group_id,
         cast("Email" as string) as email
     from {{ source("air_boltic", "customer") }}
+     {{ add_rows_limit() }}
        
 )
 

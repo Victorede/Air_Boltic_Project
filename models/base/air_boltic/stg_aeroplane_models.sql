@@ -27,4 +27,5 @@ flattened_models as (
 )
 
 
-select * from flattened_models;
+select * from flattened_models
+ {{ add_rows_limit() }}

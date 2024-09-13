@@ -8,6 +8,7 @@ source as (
         cast("Start Timestamp" as timestamp) as start_timestamp, 
         cast("End Timestamp" as timestamp) as end_timestamp
     from {{ source("air_bolticw", "order") }}
+     {{ add_rows_limit() }}
 )
 
 select * from source

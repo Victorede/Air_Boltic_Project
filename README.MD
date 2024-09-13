@@ -149,3 +149,21 @@ This model allows analysts or business users to easily query key performance met
 `Flexibility`:
 This normalized model reduces redundancy and ensures that the dataset can scale as the business grows. It allows users to join different tables (e.g., Orders, Trips, Aeroplanes) to answer complex questions while maintaining data integrity. The separation of dimensions (such as Trips and Customers) from facts (like Orders) provides flexibility in performing various analyses and deriving actionable insights.
 
+
+# Data Testing and Observability
+
+### Ensuring Data Quality and Observability with Elementary and dbt Project Evaluator
+
+Maintaining high data quality and monitoring the health of a data pipeline are critical to ensuring that downstream analyses and decisions are based on reliable information. In this project, Elementary and dbt Project Evaluator can used to implement data testing and provide robust data observability across the pipeline.
+
+## 1. Data Testing with Elementary
+    Elementary provides continuous data quality monitoring across the entire data pipeline. By integrating Elementary into the dbt project, we ensure that all key tables and models are monitored for data anomalies, inconsistencies, and performance degradation.
+
+## 2. Observability with Elementary
+    Elementary extends beyond traditional data testing by offering real-time data observability.
+     Observability in this context means gaining insight into the health of the data pipeline through continuous monitoring, automated alerts, and tracking data metrics over time.
+
+## 3. Project Evaluation with dbt Project Evaluator
+    In addition to data-level testing, the dbt Project Evaluator can be used to assess and monitor the overall health and performance of the dbt project itself. 
+
+

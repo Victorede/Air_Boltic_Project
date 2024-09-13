@@ -8,6 +8,7 @@ source as (
         cast("Seat No" as int) as seat_no, 
         cast("Status" as string) as status
     from {{ source("air_bolticw", "order") }}
+     {{ add_rows_limit() }}
 )
 
 select * from source

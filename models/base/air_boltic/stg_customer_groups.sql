@@ -12,6 +12,7 @@ source as (
         cast("Name" as string) as name,
         cast("Registry number" as string) as registry_number,
     from {{ source("air_boltic", "customer_group") }}
+     {{ add_rows_limit() }}
        
 )
 
