@@ -17,7 +17,7 @@ erDiagram
         string name
         int customer_group_id FK
         string email
-        string phone_number
+        
     }
     
     dim_customer_groups {
@@ -41,7 +41,7 @@ erDiagram
         string engine_type
     }
 
-    fact_trips {
+    dim_trips {
         int trip_id PK
         string origin_city
         string destination_city
@@ -68,9 +68,9 @@ erDiagram
 
     dim_customer_groups ||--o{ dim_customers : customer_group_id
     dim_aeroplane_models ||--o{ dim_aeroplanes : model_id
-    dim_aeroplanes ||--o{ fact_trips : airplane_id
+    dim_aeroplanes ||--o{ dim_trips : airplane_id
     dim_customers ||--o{ fact_orders : customer_id
-    fact_trips ||--o{ fact_orders : trip_id
+    dim_trips ||--o{ fact_orders : trip_id
     dim_order_status ||--o{ fact_orders : status_id
 
 ```
@@ -79,10 +79,10 @@ erDiagram
 The data model is structured to support scalable analytics by organizing the data into fact and dimension tables. It uses a normalized design to ensure minimal redundancy and high data integrity.
 
 ### Fact and Dimension Tables
-#### Fact Tables:
+#### Fact Table:
 
 fact_orders: Contains transactional data related to orders placed by customers for specific trips.
-fact_trips: Contains detailed trip information including origin, destination, and aircraft used.
+
 
 #### Dimension Tables:
 
@@ -94,6 +94,7 @@ fact_trips: Contains detailed trip information including origin, destination, an
 
 `dim_order_status`: Describes the status of the orders (booked, finished, cancelled).
 
+`dim_trips`: Contains detailed trip information including origin, destination, and aircraft used.
 ## Base, Intermediate, and Mart Layers
 The models are structured across three layers in the dbt framework:
 
@@ -107,5 +108,40 @@ The models are structured across three layers in the dbt framework:
 
 `Mart (Fact and Dimension) Layer`: Business-ready tables used for reporting and analysis.
 
-#### Fact Tables: fact_orders, fact_trips.
+#### Fact Tables: fact_orders.
 #### Dimension Tables: dim_customers, dim_aeroplanes, dim_aeroplane_models, dim_order_status.
+
+## Key Metrics Supported by the Data Model
+`Daily/Weekly/Monthly Active Users`:
+
+Can be tracked by querying the Orders Table to see which customers made bookings or completed trips in a given time period.
+
+`Revenue Analysis`:
+
+Orders Table includes the price paid by each customer for a trip. Aggregating this data allows for revenue analysis by trip, by customer group, or by time period.
+
+`Aeroplane Utilization`:
+
+The Trips Table contains information about which aeroplanes were used for each trip. Combining this with the Orders Table (to check how many seats were sold) can give insights into aeroplane utilization (e.g., load factor).
+
+`Geographic Trends`:
+
+The Trips Table includes origin and destination cities, enabling analysis of which routes are most popular or which regions need improvement.
+
+`Customer Segmentation`:
+
+The Customers Table and Customer Groups Table allow segmentation based on customer type (e.g., individual vs. corporate clients) and performance tracking per customer group.
+
+## How This Supports Self-Service Analysis
+
+Self-Service Analysis: This model allows analysts or business users to easily query key performance metrics across various dimensions, such as:
+
+Customer behavior: Who are our most active users?
+
+Geographic trends: Which routes or regions are most profitable or underused?
+
+Aircraft utilization: Which aeroplanes are used most efficiently?
+
+Revenue metrics: How much revenue is generated per customer group, per trip, or per month?
+
+Flexibility: This normalized model reduces redundancy and ensures that the dataset can scale as the business grows. It allows users to join different tables (e.g., Orders, Trips, Aeroplanes) to answer complex questions while maintaining data integrity.

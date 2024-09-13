@@ -1,0 +1,43 @@
+name: 'air_boltic_project'
+version: '1.0'
+profile: 'databricks'
+
+
+model-paths: ["models"]
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets:
+    - "target"
+    - "dbt_packages"
+
+models:
+  +persist_docs:
+    columns: true
+
+    base:
+      materialized: view
+      
+    intermediate:
+      materialized: table
+
+    marts: 
+      materialized: table
+
+  elementary:
+    +meta:
+      owner: air_bolt
+    +tags:
+      - "air_boltic_data"
+    enabled: "{{ target.name in ['production'] }}"
+    schema: elementary
+
+tests:
+  +meta:
+    owner: "Air-boltic"
+  +store_failures: true
+  
+     
