@@ -12,7 +12,7 @@ source as (
         cast("Customer Group ID" as int) as customer_group_id,
         cast("Name" as string) as name,
         cast("Registry number" as string) as name,
-    from {{ source(" air_boltic", "customer_group") }}
+    from {{ source("air_boltic", "customer_group") }}
        
 )
 

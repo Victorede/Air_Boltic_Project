@@ -34,7 +34,6 @@ erDiagram
 
     dim_aeroplane_models {
         int model_id PK
-        string airplane_model
         string manufacturer
         int max_seats
         int max_weight

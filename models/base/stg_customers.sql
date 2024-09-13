@@ -11,7 +11,7 @@ source as (
         cast("Name" as string) as name,
         cast("Customer Group ID" as int) as customer_group_id,
         cast("Email" as string) as email
-    from {{ source(" air_boltic", "customer") }}
+    from {{ source("air_boltic", "customer") }}
        
 )
 
