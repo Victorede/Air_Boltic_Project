@@ -109,7 +109,8 @@ The models are structured across three layers in the dbt framework:
 `Mart (Fact and Dimension) Layer`: Business-ready tables used for reporting and analysis.
 
 #### Fact Tables: fact_orders.
-#### Dimension Tables: dim_customers, dim_aeroplanes, dim_aeroplane_models, dim_order_status.
+
+`Dimension Tables`: dim_customers, dim_aeroplanes, dim_aeroplane_models, dim_order_status.
 
 ## Key Metrics Supported by the Data Model
 #### Daily/Weekly/Monthly Active Users:
