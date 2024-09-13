@@ -11,3 +11,10 @@ sources:
       - name: aeroplane
       - name: trip
       - name: order
+
+  - name: air_boltic_raw
+    description: "raw aeroplane model information"
+    catalog: bronze_production
+    schema: events
+    tables:
+      - name: raw_aeroplane
